@@ -7,5 +7,5 @@ public interface ITagsUtil
     /// The file is not stored beyond the scope of this method.
     /// </summary>
     /// <param name="filePath">The path to the media file.</param>
-    void OpenFile(string filePath);
+    TagLib.File? OpenFile(string filePath);
 }
