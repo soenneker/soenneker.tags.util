@@ -1,20 +1,19 @@
-﻿using Soenneker.Tags.Util.Abstract;
-using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tags.Util.Abstract;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.Tags.Util.Tests;
 
-[Collection("Collection")]
-public class TagsUtilTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public class TagsUtilTests : HostedUnitTest
 {
     private readonly ITagsUtil _util;
 
-    public TagsUtilTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public TagsUtilTests(Host host) : base(host)
     {
         _util = Resolve<ITagsUtil>(true);
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
