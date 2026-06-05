@@ -1,5 +1,8 @@
 ﻿namespace Soenneker.Tags.Util.Abstract;
 
+/// <summary>
+/// Defines the tags util contract.
+/// </summary>
 public interface ITagsUtil
 {
     /// <summary>

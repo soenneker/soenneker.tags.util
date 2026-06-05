@@ -4,6 +4,7 @@ using Soenneker.Tags.Util.Abstract;
 
 namespace Soenneker.Tags.Util;
 
+/// <inheritdoc cref="ITagsUtil"/>
 public sealed class TagsUtil : ITagsUtil
 {
     private readonly ILogger<TagsUtil> _logger;
