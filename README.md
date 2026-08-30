@@ -5,34 +5,41 @@
 
 # Soenneker.Tags.Util
 
-Defines the tags util contract.
+A small, logging-aware wrapper for opening media files with TagLibSharp.
 
-## Install
+## Installation
 
 ```bash
 dotnet add package Soenneker.Tags.Util
 ```
 
-## Quick start
+## Registration
 
 ```csharp
 using Soenneker.Tags.Util.Registrars;
-using Microsoft.Extensions.DependencyInjection;
 
-var services = new ServiceCollection();
-var result = services.AddTagsUtilAsScoped();
+builder.Services.AddTagsUtilAsScoped();
 ```
 
-Registers Tags Util with a scoped lifetime.
+## Reading tags
 
-## What you get
+```csharp
+using Soenneker.Tags.Util.Abstract;
 
-- `ITagsUtil` — Defines the tags util contract.
-- `TagsUtilRegistrar` — Represents the tags util registrar.
+public sealed class MediaInspector(ITagsUtil tags)
+{
+    public string? GetTitle(string path)
+    {
+        using TagLib.File? file = tags.OpenFile(path);
+        return file?.Tag.Title;
+    }
+}
+```
 
-## API at a glance
+`OpenFile` returns `null` and logs the exception when TagLibSharp cannot open or recognize the file. It does not throw those open failures to the caller. If the application needs to distinguish missing files, unsupported formats, and access failures, use TagLibSharp directly or inspect the configured logs.
 
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `ITagsUtil.OpenFile(filePath)` | Opens a media file using TagLibSharp, logs tag information, and logs errors if they occur. The file is not stored beyond the scope of this method. | The resulting tag Lib.File. |
-| `TagsUtilRegistrar.AddTagsUtilAsScoped(services)` | Registers Tags Util with a scoped lifetime. | The same service collection, so additional registrations can be chained. |
+## Ownership and writes
+
+The caller owns every non-null `TagLib.File` returned by `OpenFile` and must dispose it promptly so file handles are released.
+
+The returned object is the full TagLibSharp file API. Changing its tag properties is in memory until `Save()` is called; calling `Save()` modifies the media file. Validate paths and authorization before exposing that capability to untrusted input.
